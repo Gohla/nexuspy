@@ -13,16 +13,12 @@ class Nexus(object):
     self.password = password
 
 
-  def upload_artifact(self, localFilePath, repository, groupId, artifactId, version, packaging=None,
-      remoteFilePath=None, classifier=None, extension=None):
+  def upload_artifact(self, filePath, repository, groupId, artifactId, version, packaging=None, classifier=None):
     if not self.username or not self.password:
       raise Exception('Username or password was not set, cannot upload artifacts')
-    if not remoteFilePath:
-      remoteFilePath = os.path.basename(localFilePath)
-    if not extension:
-      _, extension = os.path.splitext(localFilePath)
     if not packaging:
-      packaging = extension
+      packaging = os.path.splitext(filePath)[1][1:]
+
     parameters = {
       'r'     : repository,
       'hasPom': 'false',
@@ -30,15 +26,17 @@ class Nexus(object):
       'a'     : artifactId,
       'v'     : version,
       'p'     : packaging,
-      'c'     : classifier,
-      'e'     : extension,
-      'file'  : remoteFilePath,
+      'e'     : packaging
     }
-    with open(localFilePath, "rb") as file:
-      remotePath = '{}/{}/{}/{}/{}'.format(repository, groupId, artifactId, version, remoteFilePath)
-      print('Uploading file {} to {}'.format(localFilePath, remotePath))
+    if classifier:
+      parameters['c'] = classifier
+
+    with open(filePath, "rb") as file:
+      remotePath = '{}/content/repositories/{}/{}/{}/{}/{}-{}{}.{}'.format(self.url, repository, groupId, artifactId,
+        version, artifactId, version, '-{}'.format(classifier) if classifier else '', packaging)
+      print('Uploading file {} to {}'.format(filePath, remotePath))
       response = requests.post('{}/{}'.format(self.url, Nexus.upload_path), auth=(self.username, self.password),
-        params=parameters, files={'file': file})
+        data=parameters, files={'file': file})
       if response.status_code != 201:
         raise Exception('Failed to upload file: {0}\n{1}'.format(response.status_code, response.text))
     print('Uploaded successfully')
