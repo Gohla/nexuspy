@@ -1,0 +1,18 @@
+language: python
+python:
+- '3.3'
+- '3.4'
+- '3.5'
+install:
+- python setup.py -q install
+script:
+- nosetests
+deploy:
+  provider: pypi
+  user: Gohla
+  password:
+    secure: AOwT/Y5l1HbdOpyTV07LBSNO4Fv0lV1jp4bQygFxEz8gh8wysnXm4sqnErNQiLNMLNF73dKeBNoCwTmBE5dwjxdmH/CNL+9dxvTCmkEIMa0uOlIrDy4o1XaicpYx/HQ9nGuKhV4dRh02SwYlUl7r551riBZcUnc/ZYAp8GE8zqxQTtFXGRsAXvR86tt122tDF2doKtsKUlZVMf9f/HBPRyc8+yU9Wu2t1AN/dXkZM4k4gPsF/rmfqEnN13tsAWerimOKFeDlFSDm98MVgZYrs8IMldcK32uO5NrWInWNC7fwXZ+v95uo7maa8OA3LkfPNUf/H/05Lk+Ou2TEQdVZRsVFZLj46gq5WKB3+qj+pXK/77TA5R6b4vVRREhufVhd+5OakaB8N/V1Y2rJZ6uf0vAl9JLcXQncXDq8+20+0iDBZuyTQTH6SKbcO6TRTVYG+ELjH+KucMOUSu9CF0JSlaG+DaxkNNppPAX0inmvxpihMEoynuwTAcASZlD76f5nVbfJ4+dKIU79o+ZRUEO0h9vL2F10j6dUesI1yuoK7wdv5E6BpGrQXY3XFGw7+inYbQYKYB9iHnHqWl+AB3TVlysK+SGuERclFLPgE3iewrNvlW/a0xYYl2J9+PodEtdylqpRk3FEyQwrLNoQiVvJAlW4oHznx+S9HemzTmOUJpw=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: Gohla/nexuspy
